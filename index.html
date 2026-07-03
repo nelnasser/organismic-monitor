@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organismic Alignment Monitor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Core Reset & Base Variables */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Roboto', sans-serif; 
+            background-color: #121318; 
+            color: #e3e2e6; 
+            min-height: 100vh; 
+            padding: 2rem 1rem;
+        }
+        .max-w-7xl { max-width: 80rem; margin: 0 auto; width: 100%; }
+        
+        /* Layout Header */
+        header { 
+            background-color: #1f2024; 
+            padding: 1.5rem; 
+            border-radius: 1rem; 
+            border: 1px solid #2f3036; 
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
+        }
+        h1 { font-size: 1.875rem; font-weight: 900; letter-spacing: -0.025em; color: #e3e2e6; }
+        .subtitle { color: #c7c6ca; font-size: 0.875rem; margin-top: 0.5rem; }
+        .author-tag { color: #a8c7fa; font-weight: 500; }
+
+        /* Multi-Column Layout Architecture via Flexbox */
+        .workspace-flex { display: flex; flex-direction: column; gap: 2rem; }
+        @media (min-width: 1024px) { 
+            .workspace-flex { flex-direction: row; align-items: flex-start; }
+            .left-panel { flex: 2; min-width: 0; }
+            .right-panel { flex: 1; min-width: 300px; }
+        }
+
+        /* Section Blocks */
+        .panel { background-color: #1f2024; padding: 1.5rem; border-radius: 1rem; border: 1px solid #2f3036; width: 100%; }
+        .panel-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #c7c6ca; margin-bottom: 1.5rem; }
+        
+        /* Barcode Canvas */
+        .stack-container { display: flex; flex-direction: column; gap: 0px; border-radius: 0.75rem; overflow: hidden; border: 1px solid #292a2d; }
+        .system-card { background-color: #18191d; padding: 0.75rem; border-bottom: 1px solid #292a2d; position: relative; }
+        .system-card:last-child { border-bottom: none; }
+        .system-card.active { background-color: #1e2129; border-left: 4px solid #a8c7fa; padding-left: 0.5rem; }
+        
+        /* Layout row header container holding name input + delete trigger button */
+        .card-header-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.5rem; }
+
+        /* Dynamic Inline Label Editing */
+        .system-label-input { 
+            font-family: 'Roboto', sans-serif;
+            background: transparent;
+            border: 1px solid transparent;
+            font-size: 0.625rem; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em; 
+            color: #c7c6ca; 
+            display: block; 
+            width: 100%;
+            padding: 2px 4px;
+            border-radius: 4px;
+            outline: none;
+        }
+        .system-label-input:focus {
+            background-color: #292a2d;
+            border-color: #45464f;
+            color: #e3e2e6;
+        }
+
+        /* Delete Node Target Elements */
+        .delete-btn {
+            background: transparent;
+            border: none;
+            color: #ff8484;
+            font-size: 1.1rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            opacity: 0.4;
+            transition: opacity 0.2s, background-color 0.2s;
+        }
+        .delete-btn:hover {
+            opacity: 1;
+            background-color: rgba(255, 132, 132, 0.15);
+        }
+        
+        /* 8-Track Grid Matrix */
+        .barcode-row-grid { display: flex; gap: 0.5rem; height: 3.5rem; background-color: #121318; padding: 0.25rem; border-radius: 0.5rem; overflow: hidden; }
+        .track-slot { flex: 1; height: 100%; background-color: #1b1c22; border-radius: 0.25rem; display: flex; align-items: center; justify-content: flex-start; min-width: 0; }
+        .barcode-bar { height: 100%; border-radius: 0.125rem; width: 2px; opacity: 0.35; transition: width 0.05s linear; }
+
+        /* Legend Base Axis */
+        .legend-grid { display: flex; gap: 0.5rem; padding-top: 1rem; border-top: 1px solid #2f3036; margin-top: 1.5rem; }
+        .legend-node { flex: 1; display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+        .color-pill { width: 100%; height: 0.75rem; border-radius: 0.125rem; }
+        .legend-tag { font-size: 0.55rem; color: #c7c6ca; margin-top: 0.25rem; font-weight: 700; text-transform: uppercase; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 100%; }
+
+        /* Interactive Tuning Controls */
+        .form-group { margin-bottom: 1.5rem; }
+        .control-label { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #c7c6ca; margin-bottom: 0.5rem; }
+        
+        select { 
+            width: 100%; background-color: #292a2d; border: 1px solid #45464f; padding: 0.625rem; border-radius: 0.75rem; 
+            color: #e3e2e6; font-weight: 700; outline: none; font-size: 0.875rem; cursor: pointer;
+        }
+        select:focus { border-color: #a8c7fa; }
+        option.add-action { color: #3cd67d; font-weight: 900; }
+        
+        hr { border: 0; border-top: 1px solid #2f3036; margin: 1.5rem 0; }
+        .slider-stack { display: flex; flex-direction: column; gap: 1rem; }
+        .slider-group { font-size: 0.75rem; font-weight: 500; }
+        .slider-header { display: block; font-weight: 700; margin-bottom: 0.25rem; }
+        
+        input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; background: #292a2d; height: 8px; border-radius: 4px; outline: none; margin-top: 4px; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%; cursor: pointer; }
+        input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border: none; border-radius: 50%; cursor: pointer; }
+
+        /* Native Cross-Browser Webkit Color Overrides */
+        #slide-beige::-webkit-slider-thumb { background: #dec29b; }
+        #slide-purple::-webkit-slider-thumb { background: #d197ff; }
+        #slide-red::-webkit-slider-thumb { background: #ff8484; }
+        #slide-blue::-webkit-slider-thumb { background: #70b0ff; }
+        #slide-orange::-webkit-slider-thumb { background: #ffb877; }
+        #slide-green::-webkit-slider-thumb { background: #3cd67d; }
+        #slide-yellow::-webkit-slider-thumb { background: #e7c200; }
+        #slide-turquoise::-webkit-slider-thumb { background: #4ce3ff; }
+
+        /* Native Cross-Browser Mozilla Color Overrides */
+        #slide-beige::-moz-range-thumb { background: #dec29b; }
+        #slide-purple::-moz-range-thumb { background: #d197ff; }
+        #slide-red::-moz-range-thumb { background: #ff8484; }
+        #slide-blue::-moz-range-thumb { background: #70b0ff; }
+        #slide-orange::-moz-range-thumb { background: #ffb877; }
+        #slide-green::-moz-range-thumb { background: #3cd67d; }
+        #slide-yellow::-moz-range-thumb { background: #e7c200; }
+        #slide-turquoise::-moz-range-thumb { background: #4ce3ff; }
+    </style>
+</head>
+<body>
+
+    <div class="max-w-7xl">
+        <header>
+            <h1>Organismic Alignment Monitor</h1>
+            <p class="subtitle">Full Spectrum 8-Stage Organismic Alignment Matrix <span class="author-tag">by Najeeb El-Nasser</span></p>
+        </header>
+
+        <div class="workspace-flex">
+            <!-- Left Workspace Container -->
+            <div class="panel left-panel">
+                <h2 class="panel-title">Multi-System Barcode Stack</h2>
+                <div id="barcode-container" class="stack-container"></div>
+
+                <div class="legend-grid">
+                    <div class="legend-node"><div class="color-pill" style="background-color: #dec29b;"></div><span class="legend-tag">BEIGE</span></div>
+                    <div class="legend-node"><div class="color-pill" style="background-color: #d197ff;"></div><span class="legend-tag">PURPLE</span></div>
+                    <div class="legend-node"><div class="color-pill" style="background-color: #ff8484;"></div><span class="legend-tag">RED</span></div>
+                    <div class="legend-node"><div class="color-pill" style="background-color: #70b0ff;"></div><span class="legend-tag">BLUE</span></div>
+                    <div class="legend-node"><div class="color-pill" style="background-color: #ffb877;"></div><span class="legend-tag">ORANGE</span></div>
+                    <div class="legend-node"><div class="color-pill" style="background-color: #3cd67d;"></div><span class="legend-tag">GREEN</span></div>
+                    <div class="legend-node"><div class="color-pill" style="background-color: #e7c200;"></div><span class="legend-tag">YELLOW</span></div>
+                    <div class="legend-node"><div class="color-pill" style="background-color: #4ce3ff;"></div><span class="legend-tag">TURQUOISE</span></div>
+                </div>
+            </div>
+
+            <!-- Right Control Console Container -->
+            <div class="panel right-panel">
+                <div class="form-group">
+                    <label class="control-label">Select Target System</label>
+                    <select id="system-selector" onchange="handleSystemSelection()">
+                        <!-- Dropdown choices populated dynamically via Javascript initialization -->
+                    </select>
+                </div>
+
+                <hr>
+
+                <h3 class="control-label" style="margin-bottom:1rem;">Organismic Capacity Tuning</h3>
+                
+                <div class="slider-stack">
+                    <div class="slider-group" style="color: #dec29b;">
+                        <label class="slider-header">Beige: <span id="val-beige">0</span>%</label>
+                        <input type="range" id="slide-beige" min="0" max="100" value="0" oninput="updateCurrentData('beige', this.value)">
+                    </div>
+                    <div class="slider-group" style="color: #d197ff;">
+                        <label class="slider-header">Purple: <span id="val-purple">0</span>%</label>
+                        <input type="range" id="slide-purple" min="0" max="100" value="0" oninput="updateCurrentData('purple', this.value)">
+                    </div>
+                    <div class="slider-group" style="color: #ff8484;">
+                        <label class="slider-header">Red: <span id="val-red">0</span>%</label>
+                        <input type="range" id="slide-red" min="0" max="100" value="0" oninput="updateCurrentData('red', this.value)">
+                    </div>
+                    <div class="slider-group" style="color: #70b0ff;">
+                        <label class="slider-header">Blue: <span id="val-blue">0</span>%</label>
+                        <input type="range" id="slide-blue" min="0" max="100" value="0" oninput="updateCurrentData('blue', this.value)">
+                    </div>
+                    <div class="slider-group" style="color: #ffb877;">
+                        <label class="slider-header">Orange: <span id="val-orange">0</span>%</label>
+                        <input type="range" id="slide-orange" min="0" max="100" value="0" oninput="updateCurrentData('orange', this.value)">
+                    </div>
+                    <div class="slider-group" style="color: #3cd67d;">
+                        <label class="slider-header">Green: <span id="val-green">0</span>%</label>
+                        <input type="range" id="slide-green" min="0" max="100" value="0" oninput="updateCurrentData('green', this.value)">
+                    </div>
+                    <div class="slider-group" style="color: #e7c200;">
+                        <label class="slider-header">Yellow: <span id="val-yellow">0</span>%</label>
+                        <input type="range" id="slide-yellow" min="0" max="100" value="0" oninput="updateCurrentData('yellow', this.value)">
+                    </div>
+                    <div class="slider-group" style="color: #4ce3ff;">
+                        <label class="slider-header">Turquoise: <span id="val-turquoise">0</span>%</label>
+                        <input type="range" id="slide-turquoise" min="0" max="100" value="0" oninput="updateCurrentData('turquoise', this.value)">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script Matrix -->
+    <script>
+        const vmemes = ['beige', 'purple', 'red', 'blue', 'orange', 'green', 'yellow', 'turquoise'];
+        const colors = { beige: '#dec29b', purple: '#d197ff', red: '#ff8484', blue: '#70b0ff', orange: '#ffb877', green: '#3cd67d', yellow: '#e7c200', turquoise: '#4ce3ff' };
+
+        let systemsData = [
+            { label: "System 1", beige: 0, purple: 0, red: 0, blue: 0, orange: 0, green: 0, yellow: 0, turquoise: 0 },
+            { label: "System 2", beige: 0, purple: 0, red: 0, blue: 0, orange: 0, green: 0, yellow: 0, turquoise: 0 },
+            { label: "System 3", beige: 0, purple: 0, red: 0, blue: 0, orange: 0, green: 0, yellow: 0, turquoise: 0 },
+            { label: "System 4", beige: 0, purple: 0, red: 0, blue: 0, orange: 0, green: 0, yellow: 0, turquoise: 0 },
+            { label: "System 5", beige: 0, purple: 0, red: 0, blue: 0, orange: 0, green: 0, yellow: 0, turquoise: 0 }
+        ];
+
+        let activeSystemIndex = 0;
+
+        function createDOMStructures() {
+            const container = document.getElementById('barcode-container');
+            container.innerHTML = '';
+
+            systemsData.forEach((sys, idx) => {
+                let rowHtml = `
+                    <div id="card-${idx}" class="system-card">
+                        <div class="card-header-row">
+                            <input type="text" id="label-input-${idx}" class="system-label-input" value="${sys.label}" oninput="handleLabelChange(${idx}, this.value)">
+                            <button class="delete-btn" title="Delete System" onclick="deleteSystem(${idx})">&times;</button>
+                        </div>
+                        <div class="barcode-row-grid">
+                `;
+
+                vmemes.forEach(vMeme => {
+                    rowHtml += `
+                        <div class="track-slot">
+                            <div id="bar-${idx}-${vMeme}" class="barcode-bar" style="background-color: ${colors[vMeme]};"></div>
+                        </div>
+                    `;
+                });
+
+                rowHtml += `</div></div>`;
+                container.innerHTML += rowHtml;
+            });
+        }
+
+        function updateDropdownOptions() {
+            const selector = document.getElementById('system-selector');
+            selector.innerHTML = '';
+            
+            systemsData.forEach((sys, idx) => {
+                const opt = document.createElement('option');
+                opt.value = idx;
+                opt.text = sys.label || `System ${idx + 1}`;
+                selector.appendChild(opt);
+            });
+
+            const addOption = document.createElement('option');
+            addOption.value = 'ADD_NEW';
+            addOption.className = 'add-action';
+            addOption.text = '+ Add System';
+            selector.appendChild(addOption);
+
+            selector.value = activeSystemIndex;
+        }
+
+        function updateVisuals() {
+            systemsData.forEach((sys, idx) => {
+                const card = document.getElementById(`card-${idx}`);
+                if (card) {
+                    if (idx === activeSystemIndex) {
+                        card.classList.add('active');
+                    } else {
+                        card.classList.remove('active');
+                    }
+                }
+
+                vmemes.forEach(vMeme => {
+                    const bar = document.getElementById(`bar-${idx}-${vMeme}`);
+                    if (bar) {
+                        let value = sys[vMeme];
+                        bar.style.width = value === 0 ? '2px' : `${value}%`;
+                        bar.style.opacity = value === 0 ? '0.35' : '1';
+                    }
+                });
+            });
+        }
+
+        function syncSlidersToUI() {
+            if (systemsData.length === 0) return;
+            const currentSystem = systemsData[activeSystemIndex];
+            vmemes.forEach(vMeme => {
+                const val = currentSystem[vMeme];
+                document.getElementById(`slide-${vMeme}`).value = val;
+                document.getElementById(`val-${vMeme}`).innerText = val;
+            });
+        }
+
+        function handleLabelChange(index, newTitle) {
+            systemsData[index].label = newTitle;
+            const selector = document.getElementById('system-selector');
+            if(selector.options[index]) {
+                selector.options[index].text = newTitle || `System ${index + 1}`;
+            }
+        }
+
+        function handleSystemSelection() {
+            const selector = document.getElementById('system-selector');
+            const selection = selector.value;
+
+            if (selection === 'ADD_NEW') {
+                const nextNumber = systemsData.length + 1;
+                const newSystem = { label: `System ${nextNumber}`, beige: 0, purple: 0, red: 0, blue: 0, orange: 0, green: 0, yellow: 0, turquoise: 0 };
+                systemsData.push(newSystem);
+
+                activeSystemIndex = systemsData.length - 1;
+                
+                createDOMStructures(); 
+                updateDropdownOptions();
+            } else {
+                activeSystemIndex = parseInt(selection);
+            }
+
+            syncSlidersToUI();
+            updateVisuals();
+        }
+
+        function deleteSystem(index) {
+            // Prevent deletion if it's the very last remaining system array node
+            if (systemsData.length <= 1) {
+                alert("You must keep at least one system on the stack.");
+                return;
+            }
+
+            systemsData.splice(index, 1);
+
+            // Cascade active indexing shifts to stay in bounds gracefully
+            if (activeSystemIndex >= systemsData.length) {
+                activeSystemIndex = systemsData.length - 1;
+            } else if (activeSystemIndex === index && activeSystemIndex > 0) {
+                activeSystemIndex--;
+            }
+
+            createDOMStructures();
+            updateDropdownOptions();
+            syncSlidersToUI();
+            updateVisuals();
+        }
+
+        function updateCurrentData(vMeme, val) {
+            if (systemsData.length === 0) return;
+            let numericValue = parseInt(val);
+            systemsData[activeSystemIndex][vMeme] = numericValue;
+            document.getElementById(`val-${vMeme}`).innerText = numericValue;
+            
+            const activeBar = document.getElementById(`bar-${activeSystemIndex}-${vMeme}`);
+            if (activeBar) {
+                activeBar.style.width = numericValue === 0 ? '2px' : `${numericValue}%`;
+                activeBar.style.opacity = numericValue === 0 ? '0.35' : '1';
+            }
+        }
+
+        // Initialize Core Engine
+        createDOMStructures();
+        updateDropdownOptions();
+        syncSlidersToUI();
+        updateVisuals();
+    </script>
+</body>
+</html>
