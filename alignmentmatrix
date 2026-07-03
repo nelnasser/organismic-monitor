@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spiral Dynamics VSM - Organismic Health Matrix</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Roboto', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#121318] text-[#e3e2e6] min-h-screen p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <header class="mb-8 bg-[#1f2024] p-6 rounded-2xl border border-[#2f3036] shadow-md">
+            <h1 class="text-3xl font-black tracking-tight text-[#e3e2e6]">
+                vMEME Vital Signs Monitor <span class="text-sm font-normal text-[#c7c6ca] ml-2">by Najeeb El-Nasser</span>
+            </h1>
+            <p class="text-[#c7c6ca] text-sm mt-2">Full Spectrum 8-Stage Organismic Alignment Matrix</p>
+        </header>
+
+        <!-- Main Dashboard Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+            
+            <!-- Column 1: Internal Mindset Sliders -->
+            <div class="bg-[#1f2024] p-6 rounded-2xl border border-[#2f3036] shadow-sm space-y-4">
+                <h2 class="text-lg font-medium text-[#e3e2e6] mb-2 tracking-wide">1. Internal Mindset Weights</h2>
+                <div class="space-y-4 text-xs font-medium">
+                    <div>
+                        <label class="block text-[#4ce3ff] mb-1">Turquoise (Holistic): <span id="v-turquoise">0</span>%</label>
+                        <input type="range" id="slide-turquoise" min="0" max="100" value="0" oninput="manualAdjust()" class="w-full accent-[#4ce3ff]">
+                    </div>
+                    <div>
+                        <label class="block text-[#e7c200] mb-1">Yellow (Systemic): <span id="v-yellow">0</span>%</label>
+                        <input type="range" id="slide-yellow" min="0" max="100" value="0" oninput="manualAdjust()" class="w-full accent-[#e7c200]">
+                    </div>
+                    <div>
+                        <label class="block text-[#3cd67d] mb-1">Green (Communitarian): <span id="v-green">0</span>%</label>
+                        <input type="range" id="slide-green" min="0" max="100" value="0" oninput="manualAdjust()" class="w-full accent-[#3cd67d]">
+                    </div>
+                    <div>
+                        <label class="block text-[#ffb877] mb-1">Orange (Strategic): <span id="v-orange">0</span>%</label>
+                        <input type="range" id="slide-orange" min="0" max="100" value="0" oninput="manualAdjust()" class="w-full accent-[#ffb877]">
+                    </div>
+                    <div>
+                        <label class="block text-[#70b0ff] mb-1">Blue (Disciplined): <span id="v-blue">0</span>%</label>
+                        <input type="range" id="slide-blue" min="0" max="100" value="0" oninput="manualAdjust()" class="w-full accent-[#70b0ff]">
+                    </div>
+                    <div>
+                        <label class="block text-[#ff8484] mb-1">Red (Expressive): <span id="v-red">0</span>%</label>
+                        <input type="range" id="slide-red" min="0" max="100" value="0" oninput="manualAdjust()" class="w-full accent-[#ff8484]">
+                    </div>
+                    <div>
+                        <label class="block text-[#d197ff] mb-1">Purple (Tribal/Sacred): <span id="v-purple">0</span>%</label>
+                        <input type="range" id="slide-purple" min="0" max="100" value="0" oninput="manualAdjust()" class="w-full accent-[#d197ff]">
+                    </div>
+                    <div>
+                        <label class="block text-[#dec29b] mb-1">Beige (Survival/Instinct): <span id="v-beige">0</span>%</label>
+                        <input type="range" id="slide-beige" min="0" max="100" value="0" oninput="manualAdjust()" class="w-full accent-[#dec29b]">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 2: External Variables Matrix -->
+            <div class="bg-[#1f2024] p-6 rounded-2xl border border-[#2f3036] shadow-sm space-y-5">
+                <h2 class="text-lg font-medium text-[#e3e2e6] tracking-wide">2. External Variables Matrix</h2>
+                <div class="space-y-4 text-xs font-semibold tracking-wide">
+                    <div>
+                        <label class="block text-[#c7c6ca] mb-1.5 uppercase">🎯 Systemic Mission Type</label>
+                        <select id="var-mission" onchange="evaluateSystem()" class="w-full bg-[#292a2d] border border-[#45464f] p-2.5 rounded-xl text-[#e3e2e6] focus:border-[#a8c7fa]">
+                            <option value="" selected disabled>Select Mission State...</option>
+                            <option value="turquoise">Global Conscious Network & Collective Awakening (Turquoise)</option>
+                            <option value="yellow">Systemic Flexibility & Ecological Health (Yellow)</option>
+                            <option value="green">Egalitarian Community Harmony & Human Bond (Green)</option>
+                            <option value="orange">Strategic Growth, Performance & Optimization (Orange)</option>
+                            <option value="blue">Strict Stability, Order & Compliance (Blue)</option>
+                            <option value="red">Raw Power, Emergency Exploitation & Survival (Red)</option>
+                            <option value="purple">Kinship Protection & Custom Preservation (Purple)</option>
+                            <option value="beige">Biological Imperative & Core Survival (Beige)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-[#c7c6ca] mb-1.5 uppercase">🏗️ Structural Blueprint</label>
+                        <select id="var-structure" onchange="evaluateSystem()" class="w-full bg-[#292a2d] border border-[#45464f] p-2.5 rounded-xl text-[#e3e2e6] focus:border-[#a8c7fa]">
+                            <option value="" selected disabled>Select Structure State...</option>
+                            <option value="turquoise">Holonic / Macro-Global Organism (Turquoise)</option>
+                            <option value="yellow">Interconnected Network / Fluid Ecosystem (Yellow)</option>
+                            <option value="green">Consensus-Based Circles / Flat Collectives (Green)</option>
+                            <option value="orange">Decentralized Performance Engine / Meritocracy (Orange)</option>
+                            <option value="blue">Rigid Hierarchy / Strict Standard Rules (Blue)</option>
+                            <option value="red">Command-and-Control / Imperial Domain (Red)</option>
+                            <option value="purple">Tribal Safe Haven / Clannish Hierarchy (Purple)</option>
+                            <option value="beige">Solitary / Fragmented Loose Band (Beige)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-[#c7c6ca] mb-1.5 uppercase">📊 Information Architecture</label>
+                        <select id="var-info" onchange="evaluateSystem()" class="w-full bg-[#292a2d] border border-[#45464f] p-2.5 rounded-xl text-[#e3e2e6] focus:border-[#a8c7fa]">
+                            <option value="" selected disabled>Select Information State...</option>
+                            <option value="turquoise">Unified Global Resonance / Macro-Feedback Loop (Turquoise)</option>
+                            <option value="yellow">Multi-dimensional Flow / Complex Trend Arrays (Yellow)</option>
+                            <option value="green">Qualitative Interpersonal Sentiment Loops (Green)</option>
+                            <option value="orange">Quantified Analytical Metrics (HRV, Data Panels) (Orange)</option>
+                            <option value="blue">Compliance Audits / Fixed Status Checklists (Blue)</option>
+                            <option value="red">Visceral / Direct Threat & Pain Reflexes (Red)</option>
+                            <option value="purple">Ritualized Symbols / Shared Folklore Logs (Purple)</option>
+                            <option value="beige">Sensory-Kinesthetic Instinct Loops (Beige)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-[#c7c6ca] mb-1.5 uppercase">🏆 Reward Architecture</label>
+                        <select id="var-rewards" onchange="evaluateSystem()" class="w-full bg-[#292a2d] border border-[#45464f] p-2.5 rounded-xl text-[#e3e2e6] focus:border-[#a8c7fa]">
+                            <option value="" selected disabled>Select Reward State...</option>
+                            <option value="turquoise">Cosmic Alignment / Existential Completeness (Turquoise)</option>
+                            <option value="yellow">Total Autonomy & Systemic Optimization Freedom (Yellow)</option>
+                            <option value="green">Affiliation, Peer Validation & Inclusivity (Green)</option>
+                            <option value="orange">Material / Performance Scaling, personal PBs (Orange)</option>
+                            <option value="blue">Predictable Safety, Long-term Security, Duty (Blue)</option>
+                            <option value="red">Immediate Domination / Territory / Conquest (Red)</option>
+                            <option value="purple">Group Acceptance / Tribal Protection Perks (Purple)</option>
+                            <option value="beige">Nutrient / Thermal Comfort / Physical Satiation (Beige)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 3: Analytics Dashboard -->
+            <div class="space-y-6">
+                <div class="bg-[#1f2024] p-6 rounded-2xl border border-[#2f3036] shadow-sm flex flex-col justify-between min-h-[380px]">
+                    <div class="relative h-64 w-full">
+                        <canvas id="vsmChart"></canvas>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 border-t border-[#2f3036] pt-4 mt-2">
+                        <div>
+                            <span class="text-[11px] text-[#c7c6ca] uppercase tracking-wider block">Dominant vMEME</span>
+                            <span id="metric-dom" class="text-xl font-black text-[#67686e]">None</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-[#c7c6ca] uppercase tracking-wider block">Alignment Score</span>
+                            <span id="metric-alignment" class="text-2xl font-black text-[#67686e]">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Diagnostics Box -->
+                <div class="bg-[#1f2024] p-6 rounded-2xl border border-[#2f3036] shadow-sm">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-[#c7c6ca] mb-2">VSM Organismic Diagnostics</h3>
+                    <div id="diagnostic-log" class="text-sm text-[#c7c6ca] italic">
+                        Awaiting system inputs. Adjust the internal mindset weights or external environmental variables to activate diagnostics.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Scripting Infrastructure -->
+    <script>
+        const ctx = document.getElementById('vsmChart').getContext('2d');
+        
+        let currentData = { turquoise: 0, yellow: 0, green: 0, orange: 0, blue: 0, red: 0, purple: 0, beige: 0 };
+
+        const vsmChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['Turquoise', 'Yellow', 'Green', 'Orange', 'Blue', 'Red', 'Purple', 'Beige'],
+                datasets: [{
+                    data: [0, 0, 0, 0, 0, 0, 0, 0],
+                    backgroundColor: 'rgba(168, 199, 250, 0.15)',
+                    borderColor: '#a8c7fa',
+                    borderWidth: 2,
+                    pointBackgroundColor: ['#4ce3ff', '#e7c200', '#3cd67d', '#ffb877', '#70b0ff', '#ff8484', '#d197ff', '#dec29b'],
+                    pointRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        min: 0,
+                        max: 100,
+                        // This handles fixing the canvas geometry directly when everything is zero
+                        beginAtZero: true,
+                        grid: { color: '#2f3036' },
+                        angleLines: { color: '#2f3036' },
+                        ticks: { 
+                            display: false,
+                            stepSize: 25 
+                        },
+                        pointLabels: { color: '#c7c6ca', font: { size: 11, weight: '500' } }
+                    }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        function manualAdjust() {
+            currentData.turquoise = parseInt(document.getElementById('slide-turquoise').value);
+            currentData.yellow = parseInt(document.getElementById('slide-yellow').value);
+            currentData.green = parseInt(document.getElementById('slide-green').value);
+            currentData.orange = parseInt(document.getElementById('slide-orange').value);
+            currentData.blue = parseInt(document.getElementById('slide-blue').value);
+            currentData.red = parseInt(document.getElementById('slide-red').value);
+            currentData.purple = parseInt(document.getElementById('slide-purple').value);
+            currentData.beige = parseInt(document.getElementById('slide-beige').value);
+
+            document.getElementById('v-turquoise').innerText = currentData.turquoise;
+            document.getElementById('v-yellow').innerText = currentData.yellow;
+            document.getElementById('v-green').innerText = currentData.green;
+            document.getElementById('v-orange').innerText = currentData.orange;
+            document.getElementById('v-blue').innerText = currentData.blue;
+            document.getElementById('v-red').innerText = currentData.red;
+            document.getElementById('v-purple').innerText = currentData.purple;
+            document.getElementById('v-beige').innerText = currentData.beige;
+
+            evaluateSystem();
+        }
+
+        function evaluateSystem() {
+            let entries = Object.entries(currentData);
+            let totalWeight = entries.reduce((acc, current) => acc + current[1], 0);
+
+            // If everything is zero, we feed the chart faint placeholder data (0.1) so Chart.js forces the visual ring lines to render instead of collapsing.
+            if (totalWeight === 0) {
+                vsmChart.data.datasets[0].data = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1];
+            } else {
+                vsmChart.data.datasets[0].data = [
+                    currentData.turquoise, currentData.yellow, currentData.green, currentData.orange,
+                    currentData.blue, currentData.red, currentData.purple, currentData.beige
+                ];
+            }
+            vsmChart.update();
+            
+            const m = document.getElementById('var-mission').value;
+            const s = document.getElementById('var-structure').value;
+            const i = document.getElementById('var-info').value;
+            const r = document.getElementById('var-rewards').value;
+
+            const logElement = document.getElementById('diagnostic-log');
+            const metricDom = document.getElementById('metric-dom');
+            const alignElement = document.getElementById('metric-alignment');
+
+            if (totalWeight === 0 && !m && !s && !i && !r) {
+                metricDom.innerText = "None";
+                metricDom.style.color = "#67686e";
+                alignElement.innerText = "--";
+                alignElement.className = "text-2xl font-black text-[#67686e]";
+                logElement.innerHTML = "Awaiting system inputs. Adjust the internal mindset weights or external environmental variables to activate diagnostics.";
+                logElement.className = "text-sm text-[#c7c6ca] italic";
+                return;
+            }
+
+            logElement.className = "text-sm text-[#e3e2e6] leading-relaxed";
+
+            let dominant = 'none';
+            if (totalWeight > 0) {
+                let maxVal = -1;
+                for(let [k,v] of entries) {
+                    if(v > maxVal && v > 0) {
+                        maxVal = v;
+                        dominant = k;
+                    }
+                }
+            }
+
+            if(dominant !== 'none') {
+                const domLabel = dominant.charAt(0).toUpperCase() + dominant.slice(1);
+                metricDom.innerText = domLabel;
+                const colorMap = { turquoise: '#4ce3ff', yellow: '#e7c200', green: '#3cd67d', orange: '#ffb877', blue: '#70b0ff', red: '#ff8484', purple: '#d197ff', beige: '#dec29b' };
+                metricDom.style.color = colorMap[dominant];
+            } else {
+                metricDom.innerText = "None";
+                metricDom.style.color = "#67686e";
+            }
+
+            let validSelections = 0;
+            let matches = 0;
+
+            if (m) { validSelections++; if(m === dominant) matches++; }
+            if (s) { validSelections++; if(s === dominant) matches++; }
+            if (i) { validSelections++; if(i === dominant) matches++; }
+            if (r) { validSelections++; if(r === dominant) matches++; }
+
+            if (dominant === 'none' || validSelections === 0) {
+                alignElement.innerText = "--";
+                alignElement.className = "text-2xl font-black text-[#67686e]";
+                logElement.innerHTML = "Provide both an internal dominant mindset (sliders) and external variables to compute organismic alignment.";
+                return;
+            }
+
+            let alignmentPct = Math.round((matches / validSelections) * 100);
+            alignElement.innerText = `${alignmentPct}%`;
+
+            if(alignmentPct >= 75) {
+                alignElement.className = "text-2xl font-black text-[#3cd67d]";
+                logElement.innerHTML = `<strong>System Harmony:</strong> Internal focus and external operational framework variables are highly coordinated. Energy expenditure seamlessly maps to objectives.`;
+            } else if(alignmentPct >= 40) {
+                alignElement.className = "text-2xl font-black text-[#ffb877]";
+                logElement.innerHTML = `<strong>Friction Advisory:</strong> Structural misalignment noted. The ecosystem is experiencing values-drag. Your operational architecture variables do not cleanly match your primary internal drivers.`;
+            } else {
+                alignElement.className = "text-2xl font-black text-[#ff8484]";
+                logElement.innerHTML = `<strong>Pathological Mismatch Alert:</strong> Internal psychic intent completely contradicts external architectural rules. Organism is shedding structural energy via stress dissipation.`;
+            }
+        }
+
+        evaluateSystem();
+    </script>
+</body>
+</html>
